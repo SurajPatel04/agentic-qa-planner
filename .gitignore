@@ -1,0 +1,26 @@
+# Dependencies & Virtual Envs
+node_modules/
+backend/.venv/
+backend/venv/
+
+# Environment variables
+.env
+.env.local
+backend/.env
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# System / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
