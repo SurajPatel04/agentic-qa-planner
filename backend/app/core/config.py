@@ -16,6 +16,9 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: str | None = None
     GEMINI_API_KEY: str | None = None
+    
+    QDRANT_URL: str | None = None
+    QDRANT_API_KEY: str | None = None
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

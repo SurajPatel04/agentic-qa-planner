@@ -2,7 +2,7 @@
 
 An AI-driven QA Planning Assistant built with FastAPI, LangGraph, React, and PostgreSQL. It allows developers to input a user story and acceptance criteria, and deterministically generates a comprehensive QA plan containing unit, API, integration, E2E, and manual test cases. 
 
-The AI uses a Retrieval-Augmented Generation (RAG) architecture powered by FAISS to ground its testing strategies in your provided QA markdown guidelines.
+The AI uses a Retrieval-Augmented Generation (RAG) architecture powered by Qdrant to ground its testing strategies in your provided QA markdown guidelines.
 
 ---
 
@@ -13,7 +13,7 @@ The application is built on a modern, decoupled architecture:
 ### Backend
 - **Framework**: FastAPI (Python 3.12+)
 - **AI Orchestration**: LangGraph (Stateful graph executing Retrieve -> Analyze -> Generate -> Validate)
-- **Vector Store**: FAISS (In-memory, lazily loaded local index for RAG)
+- **Vector Store**: Qdrant Cloud (Managed vector database for RAG)
 - **LLM Provider**: LangChain w/ OpenAI
 - **Database**: PostgreSQL (via asyncpg and SQLAlchemy ORM)
 - **Schema Validation**: Pydantic v2
@@ -26,7 +26,7 @@ The application is built on a modern, decoupled architecture:
 - **HTTP Client**: Axios
 
 ### AI Workflow (LangGraph)
-1. **Retrieve**: Searches local FAISS index for relevant QA Markdown guidelines based on the user story.
+1. **Retrieve**: Searches Qdrant Cloud index for relevant QA Markdown guidelines based on the user story.
 2. **Analyze**: AI identifies main user flows, assumptions, and edge case risks.
 3. **Generate**: AI proposes structured test cases (Happy Path, Edge Case, Failure State, etc.) with rationales.
 4. **Validate**: Python logically flags missing rationales or steps.
@@ -64,7 +64,7 @@ Ensure you have a PostgreSQL database running. Create a new database (e.g., `age
 
 ## 🎯 Completed Scope
 
-- **RAG Implementation**: Local FAISS vector store that automatically chunks and embeds `backend/qa_docs/` markdown files.
+- **RAG Implementation**: Qdrant Cloud vector store that automatically chunks and embeds `backend/qa_docs/` markdown files.
 - **Agentic Workflow**: LangGraph pipeline with Retrieve, Analyze, Generate, and Validate nodes.
 - **Deterministic Coverage**: Accurate math-based calculation of coverage % and explicit highlighting of missed Acceptance Criteria.
 - **Test Generation**: Generates categorised tests (Unit, API, Manual, E2E) mapped strictly to ACs.
@@ -95,7 +95,7 @@ python -m scripts.test_graph
 
 ## ⚠️ Known Limitations
 
-1. **Cold Start Penalty**: On the very first launch, the FAISS index must parse and embed all local markdown docs via OpenAI, causing the first startup to take several extra seconds. 
+1. **Cold Start Penalty**: On the very first launch, the vector store must parse and embed all local markdown docs via OpenAI and push to Qdrant, causing the first startup to take several extra seconds. 
 2. **Context Window Limitations**: Extremely large implementation summaries could exceed the standard LLM context window during the `generate` node.
 3. **No Auto-Fixing Graph**: The current LangGraph is linear. While it validates tests and generates errors, it does not currently loop back to self-correct the tests (reflection). It simply surfaces those errors to the human operator.
 
@@ -103,6 +103,6 @@ python -m scripts.test_graph
 
 ## 📦 Deployment Details
 
-- **Backend**: Suitable for deployment on platforms like Render, Railway, or AWS Elastic Beanstalk using Gunicorn with Uvicorn workers. Ensure the `faiss_index` directory is either built into the Docker image or mounted as a persistent volume, otherwise it will rebuild embeddings on every container restart.
+- **Backend**: Suitable for deployment on platforms like Render, Railway, or AWS Elastic Beanstalk using Gunicorn with Uvicorn workers. Ensure your QDRANT_URL and API keys are set.
 - **Frontend**: Standard Vite static site. Can be deployed to Vercel, Netlify, or AWS S3. Ensure `VITE_API_BASE_URL` is set to the production backend URL during the build step.
 - **Database**: Any managed PostgreSQL provider (e.g., Neon, Supabase, AWS RDS).

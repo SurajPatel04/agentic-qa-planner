@@ -5,7 +5,7 @@ This document outlines how artificial intelligence and LLM agents were utilized 
 ## 🛠️ Tools Used
 - **LangChain**: Used to orchestrate LLM calls and parse structured JSON outputs via `PydanticOutputParser`.
 - **LangGraph**: Used to construct a stateful, cyclic/acyclic graph architecture that handles the workflow (Retrieve -> Analyze -> Generate -> Validate).
-- **FAISS**: Used as a local, in-memory vector database to embed and retrieve QA standard guidelines.
+- **Qdrant**: Used as a managed cloud vector database to embed and retrieve QA standard guidelines.
 - **OpenAI (`gpt-4o` or similar)**: The core LLM powering the intelligence of the planner.
 
 ---
