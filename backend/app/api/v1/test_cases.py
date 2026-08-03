@@ -41,7 +41,12 @@ async def update_test_case(
 
     if request.status is not None:
         try:
-            test_case.status = TestStatus[request.status.upper()]
+            new_status = TestStatus[request.status.upper()]
+            if test_case.status == new_status:
+                raise HTTPException(
+                    status_code=400, detail=f"Test case is already {new_status.name}"
+                )
+            test_case.status = new_status
         except KeyError:
             raise HTTPException(
                 status_code=400, detail=f"Invalid status: {request.status}"

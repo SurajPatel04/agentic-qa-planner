@@ -96,7 +96,14 @@ async def update_plan_status(plan_id: uuid.UUID, payload: UpdatePlanRequest, db:
     if not plan:
         raise HTTPException(status_code=404, detail="QA Plan not found")
 
-    plan.status = payload.status.upper()
+    new_status = payload.status.upper()
+    
+    # Try converting to enum if we have a PlanStatus enum, otherwise compare string directly
+    # Assuming plan.status is stored as Enum or String. If String:
+    if str(plan.status).upper() == new_status or getattr(plan.status, "name", plan.status) == new_status:
+        raise HTTPException(status_code=400, detail=f"QA Plan is already {new_status}")
+
+    plan.status = new_status
     await db.commit()
     await db.refresh(plan)
     return plan
