@@ -1,6 +1,6 @@
+import time
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
-import asyncio
 
 load_dotenv()
 
@@ -18,7 +18,7 @@ def get_embeddings(max_retries: int = 3, delay: float = 2.0):
 
             if is_quota and attempt < max_retries:
                 # print(f"[get_embeddings] Quota hit, retrying ({attempt}/{max_retries})")
-                asyncio.sleep(delay * attempt)
+                time.sleep(delay * attempt)
                 continue
 
             # print(f"[get_embeddings] Failed after {attempt} attempts: {e}")
